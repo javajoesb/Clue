@@ -1,2 +1,6 @@
 *.o
 *.a
+zchaff
+zchaff_c_wrapper.cpp
+zchaff_cpp_wrapper.cpp
+
