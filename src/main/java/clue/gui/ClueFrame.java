@@ -17,7 +17,6 @@ public class ClueFrame extends JFrame {
   }
 
   private void initGui() {
-    //this.setLayout(new BorderLayout());
-    this.getContentPane().add(new NorthPanel(this), BorderLayout.SOUTH);
+    this.getContentPane().add(new NorthPanel(this), BorderLayout.NORTH);
   }
 }
