@@ -1,14 +1,16 @@
 package clue.gui;
 
-import java.awt.Color;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import clue.model.Accusation;
 import clue.model.Card;
 import clue.model.Player;
 import clue.model.Suspect;
@@ -17,7 +19,7 @@ public class PlayerPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
   private final Player player;
-  private final List<CardPanel> cards;
+  private final Map<Card, CardPanel> cardPanels;
 
   public PlayerPanel(Player player) {
     this.player = player;
@@ -26,36 +28,32 @@ public class PlayerPanel extends JPanel {
     this.setBorder(BorderFactory.createEtchedBorder());
     box.add(new JLabel(player.getName()));
     box.add(new JLabel("----"));
-    cards = new LinkedList<CardPanel>();
+    cardPanels = new HashMap<Card, CardPanel>();
     for (Card card : player.getCards()) {
       JLabel label = new JLabel(card.name());
-      label.setBackground(getColor(card));
+      if (card instanceof Suspect) {
+        label.setBackground(SuspectColor.getColor((Suspect) card));
+      }
       box.add(label);
+      CardPanel cardPanel = new CardPanel(card);
+      cardPanel.hideCard();
+      cardPanels.put(card, cardPanel);
     }
   }
 
-  private Color getColor(Card card) {
-    if (card instanceof Suspect) {
-      Suspect suspect = (Suspect) card;
-      if (Suspect.Mustard.equals(card)) {
-        return Color.yellow;
-      }
-      if (Suspect.Plumb.equals(card)) {
-        return new Color(12, 00, 24);
-      }
-      if (Suspect.White.equals(card)) {
-        return Color.WHITE;
-      }
-      if (Suspect.Scarlett.equals(card)) {
-        return Color.RED;
-      }
-      if (Suspect.Green.equals(card)) {
-        return Color.GREEN;
-      }
-      if (Suspect.Peacock.equals(card)) {
-        return Color.BLUE;
-      }
+  public void showCard(Accusation accusation) {
+    if (player.hasCardFor(accusation)) {
+      Card card = player.chooseCardFor(accusation);
+      final CardPanel cardPanel = cardPanels.get(card);
+      cardPanel.showCard();
+      Timer timer = new Timer("Card Flipper Timer", true);
+      timer.schedule(new TimerTask() {
+
+        @Override
+        public void run() {
+          cardPanel.hideCard();
+        }
+      }, 3000);
     }
-    return Color.white;
   }
 }

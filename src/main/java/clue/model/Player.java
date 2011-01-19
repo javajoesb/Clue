@@ -24,4 +24,14 @@ public class Player {
   public List<Card> getCards() {
     return new LinkedList<Card>(cards);
   }
+
+  public boolean hasCardFor(Accusation accusation) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  public Card chooseCardFor(Accusation accusation) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

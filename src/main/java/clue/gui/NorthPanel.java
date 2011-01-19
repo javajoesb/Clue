@@ -8,8 +8,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import clue.ClueEngine;
+import clue.util.Prefs;
 
 public class NorthPanel extends JPanel {
 
@@ -18,15 +21,14 @@ public class NorthPanel extends JPanel {
    */
   private static final long serialVersionUID = 20110117L;
 
-  private final ClueFrame parent;
-
   private JSpinner spinner;
   private JButton startButton;
 
   public NorthPanel(ClueFrame parent) {
-    this.parent = parent;
     startButton = new JButton();
-    spinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
+    int value = Prefs.userNode(NorthPanel.class).getInt("players", 1);
+
+    spinner = new JSpinner(new SpinnerNumberModel(value, 1, 5, 1));
     initGui();
     initListeners();
   }
@@ -44,6 +46,13 @@ public class NorthPanel extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         ClueEngine.get().startGame((Integer) spinner.getValue());
+      }
+    });
+    spinner.addChangeListener(new ChangeListener() {
+
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        Prefs.userNode(NorthPanel.class).putInt("players", (Integer) spinner.getValue());
       }
     });
   }

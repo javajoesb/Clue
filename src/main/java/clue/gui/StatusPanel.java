@@ -14,11 +14,11 @@ import clue.event.GameEventListener;
 public class StatusPanel extends JPanel implements GameEventListener {
 
   private static final long serialVersionUID = 1L;
-  private final ClueFrame parent;
+  //private final ClueFrame parent;
   private final JLabel label;
 
   public StatusPanel(ClueFrame parent) {
-    this.parent = parent;
+    //this.parent = parent;
     this.label = new JLabel();
     this.label.setPreferredSize(new Dimension(parent.getWidth() - 10, 20));
     this.label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
