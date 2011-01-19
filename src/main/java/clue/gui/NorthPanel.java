@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import clue.Clue;
+import clue.ClueEngine;
 
 public class NorthPanel extends JPanel {
 
@@ -43,7 +43,7 @@ public class NorthPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        Clue.getEngine().startGame((Integer)spinner.getValue());
+        ClueEngine.get().startGame((Integer) spinner.getValue());
       }
     });
   }
