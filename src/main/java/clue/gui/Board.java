@@ -9,18 +9,32 @@ import clue.ClueEngine;
 import clue.event.GameEvent;
 import clue.event.GameEventListener;
 import clue.model.Player;
+import clue.model.Room;
 
-public class GamePanel extends JPanel implements GameEventListener {
+public class Board extends JPanel implements GameEventListener {
 
   private static final long serialVersionUID = 1L;
 
   private List<PlayerPanel> playerPanels;
+  private List<RoomPanel> roomPanels;
+  private RoomPanel cellarPanel;
 
   private final ClueFrame parent;
 
-  public GamePanel(ClueFrame parent) {
+  public Board(ClueFrame parent) {
     this.parent = parent;
     playerPanels = new LinkedList<PlayerPanel>();
+    roomPanels = new LinkedList<RoomPanel>();
+    for (Room room : Room.values()) {
+      RoomPanel roomPanel = new RoomPanel(room);
+      add(roomPanel);
+      roomPanels.add(roomPanel);
+      if (Room.Cellar.equals(room)) {
+        cellarPanel = roomPanel;
+      }
+    }
+    parent.validate();
+    parent.repaint();
   }
 
   @Override
@@ -32,6 +46,8 @@ public class GamePanel extends JPanel implements GameEventListener {
       add(playerPanel);
       playerPanels.add(playerPanel);
     }
+    cellarPanel.addCards(ClueEngine.get().getCellarCards());
+
     parent.validate();
     parent.repaint();
   }

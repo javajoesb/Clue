@@ -1,5 +1,5 @@
 package clue.model;
 
 public enum Room implements Card {
-  Library, Theater, Annex
+  Kitchen, Ballroom, Conservatory, DiningRoom, BillardRoom, Library, Lounge, Hall, Study, Cellar
 }

@@ -14,19 +14,23 @@ public class ClueFrameComponentAdapter implements ComponentListener {
     clueFrame.setLocation(Prefs.userNode(ClueFrame.class).getInt("x", 10), Prefs.userNode(ClueFrame.class).getInt("y", 10));
   }
 
+  @Override
   public void componentResized(ComponentEvent e) {
     Prefs.userNode(ClueFrame.class).putInt("width", e.getComponent().getWidth());
     Prefs.userNode(ClueFrame.class).putInt("height", e.getComponent().getHeight());
   }
 
+  @Override
   public void componentMoved(ComponentEvent e) {
     Prefs.userNode(ClueFrame.class).putInt("x", e.getComponent().getX());
     Prefs.userNode(ClueFrame.class).putInt("y", e.getComponent().getY());
   }
 
+  @Override
   public void componentShown(ComponentEvent e) {
   }
 
+  @Override
   public void componentHidden(ComponentEvent e) {
   }
 }

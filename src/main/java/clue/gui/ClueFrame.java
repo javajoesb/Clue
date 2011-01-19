@@ -19,7 +19,7 @@ public class ClueFrame extends JFrame {
 
   private void initGui() {
     this.getContentPane().add(new NorthPanel(this), BorderLayout.NORTH);
-    GamePanel gamePanel = new GamePanel(this);
+    Board gamePanel = new Board(this);
     ClueEngine.get().addGameListener(gamePanel);
     this.add(gamePanel, BorderLayout.CENTER);
     StatusPanel statusPanel = new StatusPanel(this);

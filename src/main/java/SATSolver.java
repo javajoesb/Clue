@@ -40,7 +40,7 @@ public class SATSolver {
   public ArrayList<int[]> queryClauses = new ArrayList<int[]>();
 
   public void addClause(int[] clause) {
-    clauses.add((int[]) clause.clone());
+    clauses.add(clause.clone());
   }
 
   public void clearClauses() {
@@ -48,7 +48,7 @@ public class SATSolver {
   }
 
   public void addQueryClause(int[] clause) {
-    queryClauses.add((int[]) clause.clone());
+    queryClauses.add(clause.clone());
   }
 
   public void clearQueryClauses() {
