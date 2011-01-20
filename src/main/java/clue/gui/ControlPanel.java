@@ -12,23 +12,24 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import clue.ClueEngine;
+import clue.model.Suspect;
 import clue.util.Prefs;
 
-public class NorthPanel extends JPanel {
+public class ControlPanel extends JPanel {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 20110117L;
 
   private JSpinner spinner;
   private JButton startButton;
 
-  public NorthPanel(ClueFrame parent) {
-    startButton = new JButton();
-    int value = Prefs.userNode(NorthPanel.class).getInt("players", 1);
+  private final ClueFrame parent;
 
-    spinner = new JSpinner(new SpinnerNumberModel(value, 1, 5, 1));
+  public ControlPanel(ClueFrame parent) {
+    this.parent = parent;
+    startButton = new JButton();
+    int value = Prefs.userNode(ControlPanel.class).getInt("players", 1);
+
+    spinner = new JSpinner(new SpinnerNumberModel(value, 1, Suspect.values().length, 1));
     initGui();
     initListeners();
   }
@@ -46,13 +47,15 @@ public class NorthPanel extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         ClueEngine.get().startGame((Integer) spinner.getValue());
+        spinner.setEnabled(false);
+        startButton.setEnabled(false);
       }
     });
     spinner.addChangeListener(new ChangeListener() {
 
       @Override
       public void stateChanged(ChangeEvent e) {
-        Prefs.userNode(NorthPanel.class).putInt("players", (Integer) spinner.getValue());
+        Prefs.userNode(ControlPanel.class).putInt("players", (Integer) spinner.getValue());
       }
     });
   }

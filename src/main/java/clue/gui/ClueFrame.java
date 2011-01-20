@@ -18,12 +18,15 @@ public class ClueFrame extends JFrame {
   }
 
   private void initGui() {
-    this.getContentPane().add(new NorthPanel(this), BorderLayout.NORTH);
+    this.getContentPane().add(new ControlPanel(this), BorderLayout.NORTH);
     Board gamePanel = new Board(this);
     ClueEngine.get().addGameListener(gamePanel);
     this.add(gamePanel, BorderLayout.CENTER);
     StatusPanel statusPanel = new StatusPanel(this);
     ClueEngine.get().addGameListener(statusPanel);
     this.add(statusPanel, BorderLayout.SOUTH);
+    SuspicionPanel suspicionPanel = new SuspicionPanel(this);
+    ClueEngine.get().addGameListener(suspicionPanel);
+    this.add(suspicionPanel, BorderLayout.WEST);
   }
 }

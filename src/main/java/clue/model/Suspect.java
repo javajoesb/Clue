@@ -1,5 +1,5 @@
 package clue.model;
 
 public enum Suspect implements Card {
-  Plumb, White, Scarlett, Green, Peacock, Mustard;
+  Green, Mustard, Peacock, Plumb, Scarlett, White;
 }

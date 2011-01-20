@@ -8,6 +8,7 @@ import java.util.List;
 import clue.event.GameEvent;
 import clue.event.GameEventListener;
 import clue.event.GameState;
+import clue.model.Accusation;
 import clue.model.Card;
 import clue.model.Player;
 import clue.model.Room;
@@ -19,6 +20,7 @@ public class ClueEngine {
   private static final ClueEngine instance;
   private final List<GameEventListener> listeners;
   private final LinkedList<Card> cellarCards;
+  private Accusation currentSuspicion;
   static {
     instance = new ClueEngine();
   }
@@ -42,8 +44,8 @@ public class ClueEngine {
     List<Card> cards = populateCards();
     shuffle(cards);
     selectSuspectRoomWepon(cards);
-    buildPlayerList(numberOfPlayers);
-    dealCards(cards);
+    buildPlayerList();
+    dealCards(cards, numberOfPlayers);
     publishStartGame(new GameEvent(GameState.START));
     isStarted = true;
   }
@@ -70,16 +72,16 @@ public class ClueEngine {
     return cards;
   }
 
-  private void dealCards(List<Card> cards) {
+  private void dealCards(List<Card> cards, int numberOfPlayers) {
     Iterator<Card> itr = cards.iterator();
     int playerIndex = 0;
     while (itr.hasNext()) {
       players.get(playerIndex).addCard(itr.next());
       itr.remove();
       playerIndex++;
-      if (playerIndex > players.size() - 1) {
+      if (playerIndex > numberOfPlayers - 1) {
         playerIndex = 0;
-        if (cards.size() < players.size())
+        if (cards.size() < numberOfPlayers)
           break;
       }
     }
@@ -90,10 +92,10 @@ public class ClueEngine {
     }
   }
 
-  private void buildPlayerList(Integer numberOfPlayers) {
+  private void buildPlayerList() {
     players = new LinkedList<Player>();
-    for (int i = 0; i < numberOfPlayers; i++) {
-      players.add(new Player(String.format("Player-%s", i + 1)));
+    for (Suspect suspect : Suspect.values()) {
+      players.add(new Player(String.format("%s", suspect.name())));
     }
   }
 
@@ -131,5 +133,12 @@ public class ClueEngine {
 
   public void addGameListener(GameEventListener eventListener) {
     listeners.add(eventListener);
+  }
+
+  public void makeSuspicion(Accusation accusation) {
+    currentSuspicion = accusation;
+    for (GameEventListener event : listeners) {
+      event.makeSuspcision(accusation);
+    }
   }
 }

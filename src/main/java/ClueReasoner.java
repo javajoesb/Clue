@@ -33,7 +33,7 @@ import java.io.PrintStream;
 
 public class ClueReasoner {
   private int numPlayers;
-//  private int playerNum;
+  // private int playerNum;
   private int numCards;
   private SATSolver solver;
   private String caseFile = "cf";
@@ -107,7 +107,7 @@ public class ClueReasoner {
   }
 
   public void hand(String player, String[] cards) {
-    /*playerNum = */getPlayerNum(player);
+    /* playerNum = */getPlayerNum(player);
 
     // TO BE IMPLEMENTED AS AN EXERCISE
   }

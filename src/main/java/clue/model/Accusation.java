@@ -10,7 +10,6 @@ public class Accusation {
     this.suspect = suspect;
     this.room = room;
     this.weapon = weapon;
-
   }
 
   public Suspect getSuspect() {
