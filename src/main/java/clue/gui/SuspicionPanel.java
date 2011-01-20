@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import clue.ClueEngine;
 import clue.event.GameEvent;
 import clue.event.GameEventListener;
+import clue.gui.model.RoomComboBoxModel;
 import clue.model.Accusation;
 import clue.model.Room;
 import clue.model.Suspect;
@@ -38,7 +39,7 @@ public class SuspicionPanel extends JPanel implements GameEventListener {
     this.parent = parent;
     this.suspects = new JComboBox(this.suspectModel = new DefaultComboBoxModel(Suspect.values()));
     this.weapons = new JComboBox(this.weaponModel = new DefaultComboBoxModel(Weapon.values()));
-    this.rooms = new JComboBox(this.roomModel = new DefaultComboBoxModel(Room.values()));
+    this.rooms = new JComboBox(this.roomModel = new RoomComboBoxModel(Room.values()));
     createRumor = new JButton("Rumor");
     createAccusation = new JButton("Accuse");
 
