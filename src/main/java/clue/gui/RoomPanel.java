@@ -43,7 +43,6 @@ public class RoomPanel extends JPanel {
   public void addCards(List<Card> cards) {
     this.cards.clear();
     this.cards.addAll(cards);
-    redraw();
   }
 
   public boolean isRoom(Room room) {
@@ -52,18 +51,39 @@ public class RoomPanel extends JPanel {
 
   public void addSuspect(Suspect suspect) {
     suspects.add(suspect);
-    currentSuspect = suspect;
-    redraw();
+  }
 
+  public void removeSuspect(Suspect suspect) {
+    clearSuspect();
+    suspects.remove(suspect);
+  }
+
+  public void accuse(Suspect suspect) {
+    currentSuspect = suspect;
+  }
+
+  public void clearSuspect() {
+    currentSuspect = null;
   }
 
   public void addWeapon(Weapon weapon) {
     weapons.add(weapon);
-    currentWeapon = weapon;
-    redraw();
   }
 
-  private void redraw() {
+  public void removeWeapon(Weapon weapon) {
+    clearWeapon();
+    weapons.remove(weapon);
+  }
+
+  public void accuse(Weapon weapon) {
+    currentWeapon = weapon;
+  }
+
+  public void clearWeapon() {
+    currentWeapon = null;
+  }
+
+  public void redraw() {
     box.removeAll();
     box.add(new JLabel(room.name()));
     if (!cards.isEmpty()) {
@@ -98,22 +118,5 @@ public class RoomPanel extends JPanel {
       box.add(new WeaponPanel(weapon));
     }
     this.revalidate();
-  }
-
-  public void removeSuspect(Suspect suspect) {
-    if (suspect.equals(currentSuspect)) {
-      currentSuspect = null;
-    }
-    suspects.remove(suspect);
-    redraw();
-  }
-
-  public void removeWeapon(Weapon weapon) {
-    if (weapon.equals(currentWeapon)) {
-      currentWeapon = null;
-    }
-    weapons.remove(weapon);
-    redraw();
-
   }
 }

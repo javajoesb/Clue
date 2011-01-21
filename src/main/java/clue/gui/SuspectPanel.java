@@ -13,5 +13,6 @@ public class SuspectPanel extends JPanel {
     this.suspect = suspect;
     add(new JLabel(this.suspect.name()));
     setBackground(SuspectColor.getColor(suspect));
+    setForeground(SuspectColor.getColor(suspect));
   }
 }

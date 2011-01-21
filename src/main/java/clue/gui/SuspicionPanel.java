@@ -15,14 +15,14 @@ import javax.swing.JPanel;
 
 import clue.ClueEngine;
 import clue.event.GameEvent;
-import clue.event.GameEventListener;
+import clue.event.GameEventAdapter;
 import clue.gui.model.RoomComboBoxModel;
 import clue.model.Accusation;
 import clue.model.Room;
 import clue.model.Suspect;
 import clue.model.Weapon;
 
-public class SuspicionPanel extends JPanel implements GameEventListener {
+public class SuspicionPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
   private final ClueFrame parent;
@@ -34,6 +34,7 @@ public class SuspicionPanel extends JPanel implements GameEventListener {
   private final ComboBoxModel roomModel;
   private final JButton createRumor;
   private final JButton createAccusation;
+  private final JButton enterRoom;
 
   public SuspicionPanel(ClueFrame parent) {
     this.parent = parent;
@@ -42,6 +43,7 @@ public class SuspicionPanel extends JPanel implements GameEventListener {
     this.rooms = new JComboBox(this.roomModel = new RoomComboBoxModel(Room.values()));
     createRumor = new JButton("Rumor");
     createAccusation = new JButton("Accuse");
+    enterRoom = new JButton("Enter Room");
 
     initGui();
     enable(false);
@@ -54,6 +56,7 @@ public class SuspicionPanel extends JPanel implements GameEventListener {
     box.add(createHorizontalBox(new JLabel("Suspect"), suspects));
     box.add(createHorizontalBox(new JLabel("Weapon"), weapons));
     box.add(createHorizontalBox(createRumor, createAccusation));
+    box.add(enterRoom);
     add(box);
   }
 
@@ -66,6 +69,19 @@ public class SuspicionPanel extends JPanel implements GameEventListener {
             .makeSuspicion(new Accusation((Suspect) suspects.getSelectedItem(), (Room) rooms.getSelectedItem(), (Weapon) weapons.getSelectedItem()));
       }
     });
+    enterRoom.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        ClueEngine.get().enterRoom((Room) roomModel.getSelectedItem(), (Suspect) suspectModel.getSelectedItem());
+      }
+    });
+    ClueEngine.get().addGameListener(new GameEventAdapter() {
+      @Override
+      public void startGame(GameEvent e) {
+        enable(true);
+      }
+    });
   }
 
   @Override
@@ -75,17 +91,6 @@ public class SuspicionPanel extends JPanel implements GameEventListener {
     rooms.setEnabled(isEnabled);
     createRumor.setEnabled(isEnabled);
     createAccusation.setEnabled(isEnabled);
+    enterRoom.setEnabled(isEnabled);
   }
-
-  @Override
-  public void startGame(GameEvent e) {
-    enable(true);
-  }
-
-  @Override
-  public void makeSuspcision(Accusation accusation) {
-    // TODO Auto-generated method stub
-
-  }
-
 }

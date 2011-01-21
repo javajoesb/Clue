@@ -1,5 +1,7 @@
 package clue.gui.model;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,16 +17,20 @@ public class RoomComboBoxModel implements ComboBoxModel {
   private List<ListDataListener> listeners;
 
   public RoomComboBoxModel(Room[] roomArray) {
-    selectedRoom = null;
     listeners = new LinkedList<ListDataListener>();
     rooms = new LinkedList<Room>();
-    for (Room room : roomArray) {
-      if (!room.equals(Room.Cellar)) {
-        rooms.add(room);
+    Arrays.sort(roomArray, new Comparator<Room>() {
+
+      @Override
+      public int compare(Room lhs, Room rhs) {
+        return lhs.name().compareTo(rhs.name());
       }
+    });
+    for (Room room : roomArray) {
+      rooms.add(room);
     }
-    if (roomArray.length > 0) {
-      selectedRoom = roomArray[0];
+    if (!this.rooms.isEmpty()) {
+      setSelectedItem(this.rooms.get(0));
     }
   }
 

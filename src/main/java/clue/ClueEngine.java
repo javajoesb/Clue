@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import clue.event.GameError;
 import clue.event.GameEvent;
 import clue.event.GameEventListener;
 import clue.event.GameState;
@@ -37,14 +38,14 @@ public class ClueEngine {
 
   private boolean isStarted;
 
-  public void startGame(Integer numberOfPlayers) {
+  public void startGame(Integer numberOfPlayers, Suspect currentPlayer) {
     if (isStarted) {
       return;
     }
     List<Card> cards = populateCards();
     shuffle(cards);
     selectSuspectRoomWepon(cards);
-    buildPlayerList();
+    buildPlayerList(currentPlayer);
     dealCards(cards, numberOfPlayers);
     publishStartGame(new GameEvent(GameState.START));
     isStarted = true;
@@ -92,10 +93,14 @@ public class ClueEngine {
     }
   }
 
-  private void buildPlayerList() {
+  private void buildPlayerList(Suspect currentPlayer) {
     players = new LinkedList<Player>();
+    // put current player first
+    players.add(new Player(String.format("%s", currentPlayer.name())));
     for (Suspect suspect : Suspect.values()) {
-      players.add(new Player(String.format("%s", suspect.name())));
+      if (!suspect.equals(currentPlayer)) {
+        players.add(new Player(String.format("%s", suspect.name())));
+      }
     }
   }
 
@@ -137,8 +142,20 @@ public class ClueEngine {
 
   public void makeSuspicion(Accusation accusation) {
     currentSuspicion = accusation;
+    if (accusation.getRoom().equals(Room.Cellar)) {
+      for (GameEventListener event : listeners) {
+        event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering", Room.Cellar.name())));
+      }
+    } else {
+      for (GameEventListener event : listeners) {
+        event.makeSuspcision(accusation);
+      }
+    }
+  }
+
+  public void enterRoom(Room room, Suspect suspect) {
     for (GameEventListener event : listeners) {
-      event.makeSuspcision(accusation);
+      event.movePlayer(room, suspect);
     }
   }
 }

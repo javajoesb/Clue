@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
-import clue.ClueEngine;
 import clue.event.ClueFrameComponentAdapter;
 
 public class ClueFrame extends JFrame {
@@ -19,14 +18,8 @@ public class ClueFrame extends JFrame {
 
   private void initGui() {
     this.getContentPane().add(new ControlPanel(this), BorderLayout.NORTH);
-    Board gamePanel = new Board(this);
-    ClueEngine.get().addGameListener(gamePanel);
-    this.add(gamePanel, BorderLayout.CENTER);
-    StatusPanel statusPanel = new StatusPanel(this);
-    ClueEngine.get().addGameListener(statusPanel);
-    this.add(statusPanel, BorderLayout.SOUTH);
-    SuspicionPanel suspicionPanel = new SuspicionPanel(this);
-    ClueEngine.get().addGameListener(suspicionPanel);
-    this.add(suspicionPanel, BorderLayout.WEST);
+    this.add(new Board(this), BorderLayout.CENTER);
+    this.add(new StatusPanel(this), BorderLayout.SOUTH);
+    this.add(new SuspicionPanel(this), BorderLayout.WEST);
   }
 }
