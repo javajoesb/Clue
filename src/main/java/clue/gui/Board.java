@@ -1,7 +1,6 @@
 package clue.gui;
 
 import java.awt.Component;
-import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JOptionPane;
@@ -31,31 +30,37 @@ public class Board extends JPanel {
     this.parent = parent;
     roomBox = Box.createHorizontalBox();
     playerBox = Box.createHorizontalBox();
+    initGui();
+    initListeners();
+  }
+
+  private void initGui() {
     for (Room room : Room.values()) {
-      if (Room.Cellar.equals(room)) {
-        continue;
+      if (!Room.Cellar.equals(room)) {
+        roomBox.add(new RoomPanel(room));
       }
-      RoomPanel roomPanel = new RoomPanel(room);
-      roomBox.add(roomPanel);
     }
+    // put cellar at the end
     roomBox.add(cellarPanel = new RoomPanel(Room.Cellar));
+
     add(roomBox);
     add(playerBox);
     parent.validate();
     parent.repaint();
-    initListeners();
   }
 
   private void initListeners() {
     ClueEngine.get().addGameListener(new GameEventAdapter() {
       @Override
       public void startGame(GameEvent e) {
-        playerBox.removeAll();
-        List<Player> players = ClueEngine.get().getPlayers();
-        for (Player player : players) {
+        for (Player player : ClueEngine.get().getPlayers()) {
           PlayerPanel playerPanel = new PlayerPanel(player);
+          if (player.isCurrentPlayer()) {
+            playerPanel.showCards();
+          }
           playerBox.add(playerPanel);
         }
+        // put remaining cards in the cellar.
         cellarPanel.addCards(ClueEngine.get().getCellarCards());
 
         Board.this.parent.validate();

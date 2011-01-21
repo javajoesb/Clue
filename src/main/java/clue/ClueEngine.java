@@ -68,7 +68,9 @@ public class ClueEngine {
       cards.add(weapon);
     }
     for (Room room : Room.values()) {
-      cards.add(room);
+      if (!Room.Cellar.equals(room)) {
+        cards.add(room);
+      }
     }
     return cards;
   }
@@ -76,6 +78,7 @@ public class ClueEngine {
   private void dealCards(List<Card> cards, int numberOfPlayers) {
     Iterator<Card> itr = cards.iterator();
     int playerIndex = 0;
+    // dish out the cards to each player
     while (itr.hasNext()) {
       players.get(playerIndex).addCard(itr.next());
       itr.remove();
@@ -86,6 +89,7 @@ public class ClueEngine {
           break;
       }
     }
+    // put the rest of the cards in the cellar.
     itr = cards.iterator();
     while (itr.hasNext()) {
       cellarCards.add(itr.next());
@@ -93,13 +97,15 @@ public class ClueEngine {
     }
   }
 
-  private void buildPlayerList(Suspect currentPlayer) {
+  private void buildPlayerList(Suspect currentSuspect) {
     players = new LinkedList<Player>();
     // put current player first
-    players.add(new Player(String.format("%s", currentPlayer.name())));
+    Player currentPlayer = new Player(currentSuspect);
+    currentPlayer.setCurrentPlayer(true);
+    players.add(currentPlayer);
     for (Suspect suspect : Suspect.values()) {
-      if (!suspect.equals(currentPlayer)) {
-        players.add(new Player(String.format("%s", suspect.name())));
+      if (!suspect.equals(currentSuspect)) {
+        players.add(new Player(suspect));
       }
     }
   }
@@ -144,7 +150,7 @@ public class ClueEngine {
     currentSuspicion = accusation;
     if (accusation.getRoom().equals(Room.Cellar)) {
       for (GameEventListener event : listeners) {
-        event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering", Room.Cellar.name())));
+        event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering the %s", Room.Cellar.name())));
       }
     } else {
       for (GameEventListener event : listeners) {

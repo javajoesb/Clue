@@ -5,16 +5,17 @@ import java.util.List;
 
 public class Player {
 
-  private final String name;
+  private final Suspect suspect;
   private List<Card> cards;
+  private boolean isCurrentPlayer;
 
-  public Player(String name) {
-    this.name = name;
+  public Player(Suspect suspect) {
+    this.suspect = suspect;
     this.cards = new LinkedList<Card>();
   }
 
   public String getName() {
-    return name;
+    return suspect.name();
   }
 
   public void addCard(Card card) {
@@ -33,5 +34,17 @@ public class Player {
   public Card chooseCardFor(Accusation accusation) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  public Suspect asSuspect() {
+    return suspect;
+  }
+
+  public void setCurrentPlayer(boolean currentPlayer) {
+    this.isCurrentPlayer = currentPlayer;
+  }
+
+  public boolean isCurrentPlayer() {
+    return isCurrentPlayer;
   }
 }

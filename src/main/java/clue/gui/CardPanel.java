@@ -2,41 +2,41 @@ package clue.gui;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import clue.model.Card;
+import clue.model.Suspect;
 
 public class CardPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
+  private final Card card;
   private JLabel face;
   private JLabel back;
 
   public CardPanel(Card card) {
-    face = new JLabel(card.name());
-    back = new JLabel("??");
+    this.card = card;
+    this.face = new JLabel(card.name());
+    if (card instanceof Suspect) {
+      this.face.setBackground(SuspectColor.getColor((Suspect) card));
+    }
+
+    this.back = new JLabel("??");
     this.add(back);
   }
 
   public void showCard() {
-    SwingUtilities.invokeLater(new Runnable() {
-
-      @Override
-      public void run() {
-        CardPanel.this.remove(back);
-        CardPanel.this.add(face);
-      }
-    });
+    CardPanel.this.remove(back);
+    CardPanel.this.add(face);
+    this.revalidate();
   }
 
   public void hideCard() {
-    SwingUtilities.invokeLater(new Runnable() {
+    CardPanel.this.remove(face);
+    CardPanel.this.add(back);
+    this.revalidate();
+  }
 
-      @Override
-      public void run() {
-        CardPanel.this.remove(face);
-        CardPanel.this.add(back);
-      }
-    });
+  public boolean isCard(Card card) {
+    return this.card.equals(card);
   }
 }

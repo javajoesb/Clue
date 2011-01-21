@@ -1,14 +1,20 @@
 package clue.gui;
 
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import clue.model.Card;
 import clue.model.Room;
@@ -38,11 +44,41 @@ public class RoomPanel extends JPanel {
     this.setBorder(BorderFactory.createRaisedBevelBorder());
     add(box);
     redraw();
+    initListeners();
+  }
+
+  private void initListeners() {
+    this.addMouseListener(new MouseAdapter() {
+
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == 3) {
+          showCards();
+          Timer timer = new Timer("Player-Card-Flipper", true);
+          timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+              SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                  hideCards();
+                }
+
+              });
+            }
+          }, 1000);
+        }
+      }
+
+    });
   }
 
   public void addCards(List<Card> cards) {
     this.cards.clear();
     this.cards.addAll(cards);
+    redraw();
   }
 
   public boolean isRoom(Room room) {
@@ -119,4 +155,23 @@ public class RoomPanel extends JPanel {
     }
     this.revalidate();
   }
+
+  private void showCards() {
+    for (Component component : box.getComponents()) {
+      if (component instanceof CardPanel) {
+        CardPanel cardPanel = (CardPanel) component;
+        cardPanel.showCard();
+      }
+    }
+  }
+
+  private void hideCards() {
+    for (Component component : box.getComponents()) {
+      if (component instanceof CardPanel) {
+        CardPanel cardPanel = (CardPanel) component;
+        cardPanel.hideCard();
+      }
+    }
+  }
+
 }
