@@ -113,7 +113,7 @@ public class Board extends JPanel {
       }
 
       @Override
-      public void makeSuspcision(Accusation accusation) {
+      public void makeSuspcision(Player player, Accusation accusation) {
         movePlayer(accusation.getRoom(), accusation.getSuspect());
         moveWeapon(accusation.getRoom(), accusation.getWeapon());
         Component[] components = roomBox.getComponents();

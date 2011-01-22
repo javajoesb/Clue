@@ -66,7 +66,7 @@ public class SuspicionPanel extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         ClueEngine.get()
-            .makeSuspicion(new Accusation((Suspect) suspects.getSelectedItem(), (Room) rooms.getSelectedItem(), (Weapon) weapons.getSelectedItem()));
+            .makeSuspicion(ClueEngine.get().currentPlayer(), new Accusation((Suspect) suspects.getSelectedItem(), (Room) rooms.getSelectedItem(), (Weapon) weapons.getSelectedItem()));
       }
     });
     enterRoom.addActionListener(new ActionListener() {

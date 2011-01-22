@@ -14,6 +14,7 @@ import javax.swing.event.ChangeListener;
 
 import clue.ClueEngine;
 import clue.gui.model.SuspectComboBoxModel;
+import clue.model.Player;
 import clue.model.Suspect;
 import clue.util.Prefs;
 
@@ -52,7 +53,7 @@ public class ControlPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        ClueEngine.get().startGame((Integer) spinner.getValue(), (Suspect) players.getSelectedItem());
+        ClueEngine.get().startGame((Integer) spinner.getValue(),  (Suspect)players.getSelectedItem());
         enableControls(false);
       }
     });

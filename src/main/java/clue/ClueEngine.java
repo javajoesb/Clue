@@ -22,6 +22,9 @@ public class ClueEngine {
   private final List<GameEventListener> listeners;
   private final LinkedList<Card> cellarCards;
   private Accusation currentSuspicion;
+
+  private List<Player> players;
+ 
   static {
     instance = new ClueEngine();
   }
@@ -136,8 +139,6 @@ public class ClueEngine {
     }
   }
 
-  List<Player> players;
-
   public List<Player> getPlayers() {
     return new LinkedList<Player>(players);
   }
@@ -146,15 +147,15 @@ public class ClueEngine {
     listeners.add(eventListener);
   }
 
-  public void makeSuspicion(Accusation accusation) {
+  public void makeSuspicion(Player player, Accusation accusation) {
     currentSuspicion = accusation;
     if (accusation.getRoom().equals(Room.Cellar)) {
       for (GameEventListener event : listeners) {
-        event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering the %s", Room.Cellar.name())));
+        event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering the %s", Room.Cellar.name(), Room.Cellar.name())));
       }
     } else {
       for (GameEventListener event : listeners) {
-        event.makeSuspcision(accusation);
+        event.makeSuspcision(player, accusation);
       }
     }
   }
@@ -163,5 +164,14 @@ public class ClueEngine {
     for (GameEventListener event : listeners) {
       event.movePlayer(room, suspect);
     }
+  }
+
+  public Player currentPlayer() {
+    for (Player player : players) {
+      if (player.isCurrentPlayer()) {
+        return player;
+      }
+    }
+    throw new RuntimeException("Dear developer, I could not find my current player");
   }
 }
