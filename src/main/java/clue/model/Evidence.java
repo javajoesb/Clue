@@ -2,20 +2,19 @@ package clue.model;
 
 public class Evidence {
 
-	public Accusation getAccusation() {
-		return accusation;
-	}
+  private final Player playerWithCard;
+  private final Card card;
 
-	public Player getPlayer() {
-		return player;
-	}
+  public Evidence(Player playerWithCard, Card card) {
+    this.playerWithCard = playerWithCard;
+    this.card = card;
+  }
 
-	private final Accusation accusation;
-	private final Player player;
+  public Player whoShowed() {
+    return this.playerWithCard;
+  }
 
-	public Evidence(Player player, Accusation accusation) {
-		this.player = player;
-		this.accusation = accusation;
-
-	}
+  public Card whichCard() {
+    return this.card;
+  }
 }

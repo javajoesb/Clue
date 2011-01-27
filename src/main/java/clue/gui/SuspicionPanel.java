@@ -18,6 +18,7 @@ import clue.event.GameEvent;
 import clue.event.GameEventAdapter;
 import clue.gui.model.RoomComboBoxModel;
 import clue.model.Accusation;
+import clue.model.Player;
 import clue.model.Room;
 import clue.model.Suspect;
 import clue.model.Weapon;
@@ -65,8 +66,9 @@ public class SuspicionPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        ClueEngine.get()
-            .makeSuspicion(ClueEngine.get().currentPlayer(), new Accusation((Suspect) suspects.getSelectedItem(), (Room) rooms.getSelectedItem(), (Weapon) weapons.getSelectedItem()));
+        Player currentPlayer = ClueEngine.get().currentPlayer();
+        Accusation accusation = new Accusation((Suspect) suspects.getSelectedItem(), (Room) rooms.getSelectedItem(), (Weapon) weapons.getSelectedItem());
+        ClueEngine.get().makeSuspicion(currentPlayer, accusation);
       }
     });
     enterRoom.addActionListener(new ActionListener() {

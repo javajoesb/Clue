@@ -5,15 +5,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import clue.event.GameError;
 import clue.event.GameEvent;
 import clue.event.GameEventListener;
 import clue.event.GameState;
 import clue.model.Accusation;
 import clue.model.Card;
+import clue.model.Evidence;
 import clue.model.Player;
 import clue.model.Room;
 import clue.model.Suspect;
+import clue.model.Suspicion;
 import clue.model.Weapon;
 
 public class ClueEngine {
@@ -24,7 +28,7 @@ public class ClueEngine {
   private Accusation currentSuspicion;
 
   private List<Player> players;
- 
+
   static {
     instance = new ClueEngine();
   }
@@ -41,16 +45,17 @@ public class ClueEngine {
 
   private boolean isStarted;
 
-  public void startGame(Integer numberOfPlayers, Suspect currentPlayer) {
+  public void startGame(Integer numberOfPlayers, Suspect currentSuspect) {
     if (isStarted) {
       return;
     }
     List<Card> cards = populateCards();
     shuffle(cards);
     selectSuspectRoomWepon(cards);
-    buildPlayerList(currentPlayer);
+    final Player currentPlayer = buildPlayerList(currentSuspect);
     dealCards(cards, numberOfPlayers);
     publishStartGame(new GameEvent(GameState.START));
+    publishMarkMyCards(currentPlayer);
     isStarted = true;
   }
 
@@ -100,7 +105,7 @@ public class ClueEngine {
     }
   }
 
-  private void buildPlayerList(Suspect currentSuspect) {
+  private Player buildPlayerList(Suspect currentSuspect) {
     players = new LinkedList<Player>();
     // put current player first
     Player currentPlayer = new Player(currentSuspect);
@@ -111,6 +116,7 @@ public class ClueEngine {
         players.add(new Player(suspect));
       }
     }
+    return currentPlayer;
   }
 
   private void selectSuspectRoomWepon(List<Card> cards) {
@@ -133,10 +139,29 @@ public class ClueEngine {
     }
   }
 
-  private void publishStartGame(GameEvent gameEvent) {
+  private void publishStartGame(final GameEvent gameEvent) {
     for (GameEventListener l : listeners) {
       l.startGame(gameEvent);
     }
+  }
+
+  private void publishMarkMyCards(Player currentPlayer) {
+    List<Card> cards = currentPlayer.getCards();
+    for (Card card : cards) {
+      fireAddEvidence(new Evidence(currentPlayer, card));
+    }
+  }
+
+  private void fireAddEvidence(final Evidence evidence) {
+    SwingUtilities.invokeLater(new Runnable() {
+
+      @Override
+      public void run() {
+        for (GameEventListener event : listeners) {
+          event.addEvidence(evidence);
+        }
+      }
+    });
   }
 
   public List<Player> getPlayers() {
@@ -147,16 +172,39 @@ public class ClueEngine {
     listeners.add(eventListener);
   }
 
-  public void makeSuspicion(Player player, Accusation accusation) {
+  public void makeSuspicion(final Player currentPlayer, final Accusation accusation) {
     currentSuspicion = accusation;
     if (accusation.getRoom().equals(Room.Cellar)) {
       for (GameEventListener event : listeners) {
         event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering the %s", Room.Cellar.name(), Room.Cellar.name())));
       }
     } else {
-      for (GameEventListener event : listeners) {
-        event.makeSuspcision(player, accusation);
-      }
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          for (GameEventListener event : listeners) {
+            event.makeSuspcision(new Suspicion(currentPlayer, accusation));
+          }
+        }
+      });
+      SwingUtilities.invokeLater(new Runnable() {
+
+        @Override
+        public void run() {
+          for (Player player : players) {
+            if (!player.equals(currentPlayer) && player.hasCardFor(accusation)) {
+              Card card = player.chooseCardFor(currentPlayer, accusation);
+              for (GameEventListener event : listeners) {
+                // stop showing cards if we showed one.
+                if (event.showCard(card)) {
+                  fireAddEvidence(new Evidence(player, card));
+                  return;
+                }
+              }
+            }
+          }
+        }
+      });
     }
   }
 

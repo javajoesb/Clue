@@ -11,7 +11,10 @@ import clue.event.GameEventAdapter;
 import clue.gui.model.EvidenceColumnModel;
 import clue.gui.model.EvidenceTableModel;
 import clue.model.Accusation;
+import clue.model.Card;
+import clue.model.Evidence;
 import clue.model.Player;
+import clue.model.Suspicion;
 
 public class EvidencePanel extends JPanel {
 
@@ -20,6 +23,7 @@ public class EvidencePanel extends JPanel {
   private final Box box;
   private final EvidenceTableModel tableModel;
   private final JTable table;
+
   public EvidencePanel(ClueFrame clueFrame) {
     this.clueFrame = clueFrame;
     this.box = Box.createVerticalBox();
@@ -29,17 +33,23 @@ public class EvidencePanel extends JPanel {
   }
 
   private void initGui() {
-    
     box.add(new JLabel("Evidence"));
-    box.add(new JScrollPane(table));
+    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane.getViewport().setSize(20, 20);
+    box.add(scrollPane);
     add(box);
   }
 
   private void initListeners() {
     ClueEngine.get().addGameListener(new GameEventAdapter() {
       @Override
-      public void makeSuspcision(Player player, Accusation accusation) {
-        tableModel.addSuspcision(player, accusation);
+      public void makeSuspcision(Suspicion suspicion) {
+        tableModel.addSuspcision(suspicion);
+      }
+
+      @Override
+      public void addEvidence(Evidence evidence) {
+        tableModel.addEvidence(evidence);
       }
     });
   }

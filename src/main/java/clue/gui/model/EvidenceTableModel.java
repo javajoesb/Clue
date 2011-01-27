@@ -4,52 +4,77 @@ import java.util.Stack;
 
 import javax.swing.table.AbstractTableModel;
 
-import clue.model.Accusation;
 import clue.model.Evidence;
-import clue.model.Player;
+import clue.model.Suspicion;
 
 public class EvidenceTableModel extends AbstractTableModel {
 
   private static final long serialVersionUID = 1L;
-  private Stack<Evidence> stack;
+  private Stack<Suspicion> suspicionStack;
+  private Stack<Evidence> evidenceStack;
 
   public EvidenceTableModel() {
-    stack = new Stack<Evidence>();
+    suspicionStack = new Stack<Suspicion>();
+    evidenceStack = new Stack<Evidence>();
   }
 
-  public void addSuspcision(Player player, Accusation accusation) {
-    stack.push(new Evidence(player, accusation));
+  public void addSuspcision(Suspicion suspicion) {
+    suspicionStack.push(suspicion);
+    super.fireTableDataChanged();
+  }
+
+  public void addEvidence(Evidence evidence) {
+    evidenceStack.push(evidence);
     super.fireTableDataChanged();
   }
 
   @Override
   public int getRowCount() {
-    return stack.size();
+    return Math.max(evidenceStack.size(), suspicionStack.size());
   }
 
   @Override
   public int getColumnCount() {
-    return 4;
+    return 5;
   }
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    Evidence evidence = stack.get(rowIndex);
-    if (evidence == null) {
-      return String.format("Uknown evidence at row %s", rowIndex);
+
+    Suspicion suspicion = null;
+    try {
+      suspicion = suspicionStack.get(rowIndex);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      return "";
+    }
+    if (suspicion == null) {
+      throw new RuntimeException(String.format("No suspicion at row %s", rowIndex));
     }
     switch (columnIndex) {
     case 0:
-      return evidence.getPlayer().getName();
+      return suspicion.getPlayer().getName();
     case 1:
-      return evidence.getAccusation().getRoom().name();
+      return suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getSuspect();
     case 2:
-      return evidence.getAccusation().getSuspect().name();
+      return suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getRoom();
     case 3:
-      return evidence.getAccusation().getWeapon().name();
-    default:
-      return String.format("Unknown column %s", columnIndex);
+      return suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getWeapon();
     }
+
+    if (evidenceStack.size() >= rowIndex) {
+      return "";
+    }
+    Evidence evidence = evidenceStack.get(rowIndex);
+    if (evidence == null) {
+      throw new RuntimeException(String.format("No evidence at row %s", rowIndex));
+    }
+    switch (columnIndex) {
+    case 4:
+      return evidence.whoShowed().getName();
+    case 5:
+      return evidence.whichCard().name();
+    }
+    return String.format("? %s,%s", rowIndex, columnIndex);
   }
 
   @Override

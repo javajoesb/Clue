@@ -14,6 +14,7 @@ import clue.model.Accusation;
 import clue.model.Player;
 import clue.model.Room;
 import clue.model.Suspect;
+import clue.model.Suspicion;
 import clue.model.Weapon;
 
 public class Board extends JPanel {
@@ -23,13 +24,15 @@ public class Board extends JPanel {
   private RoomPanel cellarPanel;
   private final Box roomBox;
   private final Box playerBox;
-
   private final ClueFrame parent;
+  private final EvidencePanel evidencePanel;
 
   public Board(ClueFrame parent) {
     this.parent = parent;
     roomBox = Box.createHorizontalBox();
     playerBox = Box.createHorizontalBox();
+    evidencePanel = new EvidencePanel(parent);
+
     initGui();
     initListeners();
   }
@@ -45,6 +48,7 @@ public class Board extends JPanel {
 
     add(roomBox);
     add(playerBox);
+    add(evidencePanel);
     parent.validate();
     parent.repaint();
   }
@@ -113,7 +117,8 @@ public class Board extends JPanel {
       }
 
       @Override
-      public void makeSuspcision(Player player, Accusation accusation) {
+      public void makeSuspcision(Suspicion suspicion) {
+        Accusation accusation = suspicion.getAccusation();
         movePlayer(accusation.getRoom(), accusation.getSuspect());
         moveWeapon(accusation.getRoom(), accusation.getWeapon());
         Component[] components = roomBox.getComponents();

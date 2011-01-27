@@ -12,7 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import clue.model.Accusation;
+import clue.ClueEngine;
+import clue.event.GameEventAdapter;
 import clue.model.Card;
 import clue.model.Player;
 
@@ -45,6 +46,21 @@ public class PlayerPanel extends JPanel {
   }
 
   private void initListeners() {
+    // we have to add this in the event queue as we are creating the panel in
+    // that thread.
+    SwingUtilities.invokeLater(new Runnable() {
+
+      @Override
+      public void run() {
+        ClueEngine.get().addGameListener(new GameEventAdapter() {
+          @Override
+          public boolean showCard(Card card) {
+            return PlayerPanel.this.showCard(card);
+          }
+        });
+      }
+    });
+
     this.addMouseListener(new MouseAdapter() {
 
       @Override
@@ -70,10 +86,9 @@ public class PlayerPanel extends JPanel {
     });
   }
 
-  public void showCard(Accusation accusation) {
-    if (player.hasCardFor(accusation)) {
-      Card card = player.chooseCardFor(accusation);
-      final CardPanel cardPanel = findCardPanel(card);
+  public boolean showCard(Card card) {
+    final CardPanel cardPanel = findCardPanel(card);
+    if (cardPanel != null) {
       cardPanel.showCard();
       Timer timer = new Timer("Card Flipper Timer", true);
       timer.schedule(new TimerTask() {
@@ -83,7 +98,9 @@ public class PlayerPanel extends JPanel {
           cardPanel.hideCard();
         }
       }, 3000);
+      return true;
     }
+    return false;
   }
 
   private CardPanel findCardPanel(Card card) {
@@ -95,7 +112,7 @@ public class PlayerPanel extends JPanel {
         }
       }
     }
-    throw new RuntimeException(String.format("Dear developer, sI can't find card %s in my box", card));
+    return null;
   }
 
   public void showCards() {

@@ -21,9 +21,6 @@ public class ClueFrame extends JFrame {
     this.getContentPane().add(new ControlPanel(this), BorderLayout.NORTH);
     this.add(new Board(this), BorderLayout.CENTER);
     this.add(new StatusPanel(this), BorderLayout.SOUTH);
-    Box box = Box.createVerticalBox();
-    box.add(new SuspicionPanel(this));
-    box.add(new EvidencePanel(this));
-    this.add(box, BorderLayout.WEST);
+    this.add(new InfoPanel(this), BorderLayout.WEST);
   }
 }
