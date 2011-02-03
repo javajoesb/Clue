@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -17,6 +16,8 @@ import clue.ClueEngine;
 import clue.event.GameEvent;
 import clue.event.GameEventAdapter;
 import clue.gui.model.RoomComboBoxModel;
+import clue.gui.model.SuspectComboBoxModel;
+import clue.gui.model.WeaponComboBoxModel;
 import clue.model.Accusation;
 import clue.model.Player;
 import clue.model.Room;
@@ -39,9 +40,12 @@ public class SuspicionPanel extends JPanel {
 
   public SuspicionPanel(ClueFrame parent) {
     this.parent = parent;
-    this.suspects = new JComboBox(this.suspectModel = new DefaultComboBoxModel(Suspect.values()));
-    this.weapons = new JComboBox(this.weaponModel = new DefaultComboBoxModel(Weapon.values()));
-    this.rooms = new JComboBox(this.roomModel = new RoomComboBoxModel(Room.values()));
+    this.suspects = new JComboBox(this.suspectModel = new SuspectComboBoxModel(
+        Suspect.values()));
+    this.weapons = new JComboBox(this.weaponModel = new WeaponComboBoxModel(
+        Weapon.values()));
+    this.rooms = new JComboBox(this.roomModel = new RoomComboBoxModel(
+        Room.values()));
     createRumor = new JButton("Rumor");
     createAccusation = new JButton("Accuse");
     enterRoom = new JButton("Enter Room");
@@ -67,7 +71,9 @@ public class SuspicionPanel extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         Player currentPlayer = ClueEngine.get().currentPlayer();
-        Accusation accusation = new Accusation((Suspect) suspects.getSelectedItem(), (Room) rooms.getSelectedItem(), (Weapon) weapons.getSelectedItem());
+        Accusation accusation = new Accusation((Suspect) suspects
+            .getSelectedItem(), (Room) rooms.getSelectedItem(),
+            (Weapon) weapons.getSelectedItem());
         ClueEngine.get().makeSuspicion(currentPlayer, accusation);
       }
     });
@@ -75,7 +81,8 @@ public class SuspicionPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        ClueEngine.get().enterRoom((Room) roomModel.getSelectedItem(), (Suspect) suspectModel.getSelectedItem());
+        ClueEngine.get().enterRoom((Room) roomModel.getSelectedItem(),
+            (Suspect) suspectModel.getSelectedItem());
       }
     });
     ClueEngine.get().addGameListener(new GameEventAdapter() {

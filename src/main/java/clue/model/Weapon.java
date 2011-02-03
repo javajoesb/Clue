@@ -1,5 +1,5 @@
 package clue.model;
 
 public enum Weapon implements Card {
-  Candlestick, Knife, Pipe, Revolver, Rope, Wrench
+  Candlestick, Knife, Pipe, Revolver, Rope, Wrench, None
 }

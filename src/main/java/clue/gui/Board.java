@@ -39,7 +39,7 @@ public class Board extends JPanel {
 
   private void initGui() {
     for (Room room : Room.values()) {
-      if (!Room.Cellar.equals(room)) {
+      if (!Room.Cellar.equals(room) && !Room.None.equals(room)) {
         roomBox.add(new RoomPanel(room));
       }
     }

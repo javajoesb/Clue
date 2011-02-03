@@ -45,34 +45,34 @@ public class EvidenceTableModel extends AbstractTableModel {
     try {
       suspicion = suspicionStack.get(rowIndex);
     } catch (ArrayIndexOutOfBoundsException e) {
-      return "";
-    }
-    if (suspicion == null) {
-      throw new RuntimeException(String.format("No suspicion at row %s", rowIndex));
+      // ignore
     }
     switch (columnIndex) {
     case 0:
-      return suspicion.getPlayer().getName();
+      return suspicion == null ? "" : suspicion.getPlayer().getName();
     case 1:
-      return suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getSuspect();
+      return suspicion == null ? "" : suspicion.getAccusation() == null ? ""
+          : suspicion.getAccusation().getSuspect();
     case 2:
-      return suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getRoom();
+      return suspicion == null ? "" : suspicion.getAccusation() == null ? ""
+          : suspicion.getAccusation().getRoom();
     case 3:
-      return suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getWeapon();
+      return suspicion == null ? "" : suspicion.getAccusation() == null ? ""
+          : suspicion.getAccusation().getWeapon();
+      // additional columns below
     }
 
-    if (evidenceStack.size() >= rowIndex) {
-      return "";
-    }
-    Evidence evidence = evidenceStack.get(rowIndex);
-    if (evidence == null) {
-      throw new RuntimeException(String.format("No evidence at row %s", rowIndex));
+    Evidence evidence = null;
+    try {
+      evidence = evidenceStack.get(rowIndex);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+      // ignore
     }
     switch (columnIndex) {
     case 4:
-      return evidence.whoShowed().getName();
+      return evidence == null ? "" : evidence.whoShowed().getName();
     case 5:
-      return evidence.whichCard().name();
+      return evidence == null ? "" : evidence.whichCard().name();
     }
     return String.format("? %s,%s", rowIndex, columnIndex);
   }

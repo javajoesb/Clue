@@ -70,13 +70,18 @@ public class ClueEngine {
   private List<Card> populateCards() {
     LinkedList<Card> cards = new LinkedList<Card>();
     for (Suspect suspect : Suspect.values()) {
-      cards.add(suspect);
+      if (!Suspect.None.equals(suspect)) {
+        cards.add(suspect);
+      }
     }
     for (Weapon weapon : Weapon.values()) {
-      cards.add(weapon);
+      if (!Weapon.None.equals(weapon)) {
+
+        cards.add(weapon);
+      }
     }
     for (Room room : Room.values()) {
-      if (!Room.Cellar.equals(room)) {
+      if (!Room.Cellar.equals(room) || !Room.None.equals(room)) {
         cards.add(room);
       }
     }
@@ -148,6 +153,18 @@ public class ClueEngine {
   private void publishMarkMyCards(Player currentPlayer) {
     List<Card> cards = currentPlayer.getCards();
     for (Card card : cards) {
+      Accusation accusation;
+      if (card instanceof Suspect) {
+        accusation = new Accusation((Suspect) card, Room.None, Weapon.None);
+      } else if (card instanceof Room) {
+        accusation = new Accusation(Suspect.None, (Room) card, Weapon.None);
+      } else if (card instanceof Weapon) {
+        accusation = new Accusation(Suspect.None, Room.None, (Weapon) card);
+      } else {
+        throw new RuntimeException(String.format(
+            "Dear developer, I don't what kind of card %s is", card.getClass()));
+      }
+      makeSuspicion(currentPlayer, accusation);
       fireAddEvidence(new Evidence(currentPlayer, card));
     }
   }
@@ -172,11 +189,14 @@ public class ClueEngine {
     listeners.add(eventListener);
   }
 
-  public void makeSuspicion(final Player currentPlayer, final Accusation accusation) {
+  public void makeSuspicion(final Player currentPlayer,
+      final Accusation accusation) {
     currentSuspicion = accusation;
     if (accusation.getRoom().equals(Room.Cellar)) {
       for (GameEventListener event : listeners) {
-        event.error(new GameError(String.format("You can't make an accusation in the %s, Try just entering the %s", Room.Cellar.name(), Room.Cellar.name())));
+        event.error(new GameError(String.format(
+            "You can't make an accusation in the %s, Try just entering the %s",
+            Room.Cellar.name(), Room.Cellar.name())));
       }
     } else {
       SwingUtilities.invokeLater(new Runnable() {
@@ -220,6 +240,7 @@ public class ClueEngine {
         return player;
       }
     }
-    throw new RuntimeException("Dear developer, I could not find my current player");
+    throw new RuntimeException(
+        "Dear developer, I could not find my current player");
   }
 }

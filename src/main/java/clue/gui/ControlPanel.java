@@ -2,6 +2,8 @@ package clue.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,8 +34,11 @@ public class ControlPanel extends JPanel {
     this.parent = parent;
     this.startButton = new JButton();
     this.players = new JComboBox(new SuspectComboBoxModel(Suspect.values()));
+    this.players.setSelectedIndex(Prefs.userNode(this.getClass()).getInt(
+        "currentPlayerIndex", 0));
     int value = Prefs.userNode(ControlPanel.class).getInt("players", 1);
-    this.spinner = new JSpinner(new SpinnerNumberModel(value, 1, Suspect.values().length, 1));
+    this.spinner = new JSpinner(new SpinnerNumberModel(value, 1,
+        Suspect.values().length - 1, 1));
 
     initGui();
     initListeners();
@@ -53,7 +58,8 @@ public class ControlPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        ClueEngine.get().startGame((Integer) spinner.getValue(),  (Suspect)players.getSelectedItem());
+        ClueEngine.get().startGame((Integer) spinner.getValue(),
+            (Suspect) players.getSelectedItem());
         enableControls(false);
       }
     });
@@ -61,7 +67,19 @@ public class ControlPanel extends JPanel {
 
       @Override
       public void stateChanged(ChangeEvent e) {
-        Prefs.userNode(ControlPanel.class).putInt("players", (Integer) spinner.getValue());
+        Prefs.userNode(ControlPanel.class).putInt("players",
+            (Integer) spinner.getValue());
+      }
+    });
+    players.addItemListener(new ItemListener() {
+
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        if (ItemEvent.SELECTED == e.getStateChange()) {
+          JComboBox box = (JComboBox) e.getSource();
+          Prefs.userNode(ControlPanel.class).putInt("currentPlayerIndex",
+              box.getSelectedIndex());
+        }
       }
     });
   }

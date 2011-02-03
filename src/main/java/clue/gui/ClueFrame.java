@@ -2,7 +2,6 @@ package clue.gui;
 
 import java.awt.BorderLayout;
 
-import javax.swing.Box;
 import javax.swing.JFrame;
 
 import clue.event.ClueFrameComponentAdapter;
