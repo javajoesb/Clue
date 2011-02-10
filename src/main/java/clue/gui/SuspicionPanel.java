@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -27,25 +26,17 @@ import clue.model.Weapon;
 public class SuspicionPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
-  private final ClueFrame parent;
   private final JComboBox suspects;
   private final JComboBox weapons;
   private final JComboBox rooms;
-  private final ComboBoxModel suspectModel;
-  private final ComboBoxModel weaponModel;
-  private final ComboBoxModel roomModel;
   private final JButton createRumor;
   private final JButton createAccusation;
   private final JButton enterRoom;
 
-  public SuspicionPanel(ClueFrame parent) {
-    this.parent = parent;
-    this.suspects = new JComboBox(this.suspectModel = new SuspectComboBoxModel(
-        Suspect.values()));
-    this.weapons = new JComboBox(this.weaponModel = new WeaponComboBoxModel(
-        Weapon.values()));
-    this.rooms = new JComboBox(this.roomModel = new RoomComboBoxModel(
-        Room.values()));
+  public SuspicionPanel() {
+    this.suspects = new JComboBox(new SuspectComboBoxModel(Suspect.values()));
+    this.weapons = new JComboBox(new WeaponComboBoxModel(Weapon.values()));
+    this.rooms = new JComboBox(new RoomComboBoxModel(Room.values()));
     createRumor = new JButton("Rumor");
     createAccusation = new JButton("Accuse");
     enterRoom = new JButton("Enter Room");
@@ -81,8 +72,8 @@ public class SuspicionPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        ClueEngine.get().enterRoom((Room) roomModel.getSelectedItem(),
-            (Suspect) suspectModel.getSelectedItem());
+        ClueEngine.get().enterRoom((Room) rooms.getSelectedItem(),
+            (Suspect) suspects.getSelectedItem());
       }
     });
     ClueEngine.get().addGameListener(new GameEventAdapter() {

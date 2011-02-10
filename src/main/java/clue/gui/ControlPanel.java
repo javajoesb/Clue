@@ -16,7 +16,6 @@ import javax.swing.event.ChangeListener;
 
 import clue.ClueEngine;
 import clue.gui.model.SuspectComboBoxModel;
-import clue.model.Player;
 import clue.model.Suspect;
 import clue.util.Prefs;
 
@@ -27,11 +26,7 @@ public class ControlPanel extends JPanel {
   private final JSpinner spinner;
   private final JButton startButton;
   private final JComboBox players;
-
-  private final ClueFrame parent;
-
-  public ControlPanel(ClueFrame parent) {
-    this.parent = parent;
+  public ControlPanel() {
     this.startButton = new JButton();
     this.players = new JComboBox(new SuspectComboBoxModel(Suspect.values()));
     this.players.setSelectedIndex(Prefs.userNode(this.getClass()).getInt(

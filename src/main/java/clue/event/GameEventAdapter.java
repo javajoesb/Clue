@@ -2,7 +2,6 @@ package clue.event;
 
 import clue.model.Card;
 import clue.model.Evidence;
-import clue.model.Player;
 import clue.model.Room;
 import clue.model.Suspect;
 import clue.model.Suspicion;

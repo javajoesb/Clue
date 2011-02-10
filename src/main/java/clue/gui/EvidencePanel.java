@@ -8,24 +8,18 @@ import javax.swing.JTable;
 
 import clue.ClueEngine;
 import clue.event.GameEventAdapter;
-import clue.gui.model.EvidenceColumnModel;
 import clue.gui.model.EvidenceTableModel;
-import clue.model.Accusation;
-import clue.model.Card;
 import clue.model.Evidence;
-import clue.model.Player;
 import clue.model.Suspicion;
 
 public class EvidencePanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
-  private final ClueFrame clueFrame;
   private final Box box;
   private final EvidenceTableModel tableModel;
   private final JTable table;
 
-  public EvidencePanel(ClueFrame clueFrame) {
-    this.clueFrame = clueFrame;
+  public EvidencePanel() {
     this.box = Box.createVerticalBox();
     this.table = new JTable(tableModel = new EvidenceTableModel());
     initGui();

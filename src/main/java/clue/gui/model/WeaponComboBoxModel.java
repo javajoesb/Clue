@@ -26,10 +26,7 @@ public class WeaponComboBoxModel implements ComboBoxModel {
       }
     });
     for (Weapon weapon : weaponArray) {
-      if (!Weapon.None.equals(weapon)) {
-        weapons.add(weapon);
-      }
-
+      weapons.add(weapon);
     }
     if (!this.weapons.isEmpty()) {
       setSelectedItem(this.weapons.get(0));

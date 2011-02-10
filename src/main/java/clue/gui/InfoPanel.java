@@ -7,9 +7,9 @@ public class InfoPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
 
-  public InfoPanel(ClueFrame parent) {
+  public InfoPanel() {
     Box box = Box.createVerticalBox();
-    box.add(new SuspicionPanel(parent));
+    box.add(new SuspicionPanel());
     this.add(box);
   }
 }

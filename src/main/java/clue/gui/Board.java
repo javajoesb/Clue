@@ -31,7 +31,7 @@ public class Board extends JPanel {
     this.parent = parent;
     roomBox = Box.createHorizontalBox();
     playerBox = Box.createHorizontalBox();
-    evidencePanel = new EvidencePanel(parent);
+    evidencePanel = new EvidencePanel();
 
     initGui();
     initListeners();
@@ -39,7 +39,7 @@ public class Board extends JPanel {
 
   private void initGui() {
     for (Room room : Room.values()) {
-      if (!Room.Cellar.equals(room) && !Room.None.equals(room)) {
+      if (!Room.Cellar.equals(room)) {
         roomBox.add(new RoomPanel(room));
       }
     }

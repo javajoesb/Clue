@@ -27,9 +27,7 @@ public class SuspectComboBoxModel implements ComboBoxModel {
       }
     });
     for (Suspect suspect : suspectArray) {
-      if (!Suspect.None.equals(suspect)) {
-        this.suspects.add(suspect);
-      }
+      this.suspects.add(suspect);
     }
     if (!this.suspects.isEmpty()) {
       setSelectedItem(this.suspects.get(0));
@@ -62,9 +60,8 @@ public class SuspectComboBoxModel implements ComboBoxModel {
     if (anItem instanceof Suspect) {
       selected = (Suspect) anItem;
     } else {
-      throw new ClassCastException(String.format("Expected %s, not %s",
-          Suspect.class.getSimpleName(), anItem == null ? "?NULL" : anItem
-              .getClass().getCanonicalName()));
+      throw new ClassCastException(String.format("Expected %s, not %s", Suspect.class.getSimpleName(), anItem == null ? "?NULL" : anItem.getClass()
+          .getCanonicalName()));
     }
   }
 

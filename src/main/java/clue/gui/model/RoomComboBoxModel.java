@@ -27,9 +27,7 @@ public class RoomComboBoxModel implements ComboBoxModel {
       }
     });
     for (Room room : roomArray) {
-      if (!Room.None.equals(room)) {
-        rooms.add(room);
-      }
+      rooms.add(room);
     }
     if (!this.rooms.isEmpty()) {
       setSelectedItem(this.rooms.get(0));

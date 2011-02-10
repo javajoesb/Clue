@@ -25,9 +25,6 @@ public class SuspectColor {
     if (Suspect.Peacock.equals(suspect)) {
       return Color.BLUE;
     }
-    if (Suspect.None.equals(suspect)) {
-      return Color.BLACK;
-    }
     throw new RuntimeException(String.format("Not shure what color you want for suspect: %s", suspect.name()));
   }
 
