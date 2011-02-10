@@ -1,5 +1,9 @@
 package clue.model;
 
+import org.pojomatic.Pojomatic;
+import org.pojomatic.annotations.AutoProperty;
+
+@AutoProperty
 public class Accusation {
 
   private final Suspect suspect;
@@ -12,15 +16,31 @@ public class Accusation {
     this.weapon = weapon;
   }
 
-  public Suspect getSuspect() {
-    return suspect;
+  @Override
+  public boolean equals(Object other) {
+    return Pojomatic.equals(this, other);
   }
 
   public Room getRoom() {
     return room;
   }
 
+  public Suspect getSuspect() {
+    return suspect;
+  }
+
   public Weapon getWeapon() {
     return weapon;
   }
+
+  @Override
+  public int hashCode() {
+    return Pojomatic.hashCode(this);
+  }
+
+  @Override
+  public String toString() {
+    return Pojomatic.toString(this);
+  }
+
 }

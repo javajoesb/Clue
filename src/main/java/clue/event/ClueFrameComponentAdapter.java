@@ -15,9 +15,7 @@ public class ClueFrameComponentAdapter implements ComponentListener {
   }
 
   @Override
-  public void componentResized(ComponentEvent e) {
-    Prefs.userNode(ClueFrame.class).putInt("width", e.getComponent().getWidth());
-    Prefs.userNode(ClueFrame.class).putInt("height", e.getComponent().getHeight());
+  public void componentHidden(ComponentEvent e) {
   }
 
   @Override
@@ -27,10 +25,12 @@ public class ClueFrameComponentAdapter implements ComponentListener {
   }
 
   @Override
-  public void componentShown(ComponentEvent e) {
+  public void componentResized(ComponentEvent e) {
+    Prefs.userNode(ClueFrame.class).putInt("width", e.getComponent().getWidth());
+    Prefs.userNode(ClueFrame.class).putInt("height", e.getComponent().getHeight());
   }
 
   @Override
-  public void componentHidden(ComponentEvent e) {
+  public void componentShown(ComponentEvent e) {
   }
 }

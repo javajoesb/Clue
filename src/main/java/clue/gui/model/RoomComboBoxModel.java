@@ -26,7 +26,7 @@ public class RoomComboBoxModel implements ComboBoxModel {
         return lhs.name().compareTo(rhs.name());
       }
     });
-    for (Room room : roomArray) {
+    for (final Room room : roomArray) {
       rooms.add(room);
     }
     if (!this.rooms.isEmpty()) {
@@ -35,8 +35,8 @@ public class RoomComboBoxModel implements ComboBoxModel {
   }
 
   @Override
-  public int getSize() {
-    return rooms.size();
+  public void addListDataListener(ListDataListener l) {
+    listeners.add(l);
   }
 
   @Override
@@ -45,8 +45,13 @@ public class RoomComboBoxModel implements ComboBoxModel {
   }
 
   @Override
-  public void addListDataListener(ListDataListener l) {
-    listeners.add(l);
+  public Object getSelectedItem() {
+    return selectedRoom;
+  }
+
+  @Override
+  public int getSize() {
+    return rooms.size();
   }
 
   @Override
@@ -59,10 +64,5 @@ public class RoomComboBoxModel implements ComboBoxModel {
     if (o instanceof Room) {
       this.selectedRoom = (Room) o;
     }
-  }
-
-  @Override
-  public Object getSelectedItem() {
-    return selectedRoom;
   }
 }

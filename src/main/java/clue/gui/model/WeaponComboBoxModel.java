@@ -25,7 +25,7 @@ public class WeaponComboBoxModel implements ComboBoxModel {
         return lhs.name().compareTo(rhs.name());
       }
     });
-    for (Weapon weapon : weaponArray) {
+    for (final Weapon weapon : weaponArray) {
       weapons.add(weapon);
     }
     if (!this.weapons.isEmpty()) {
@@ -34,8 +34,8 @@ public class WeaponComboBoxModel implements ComboBoxModel {
   }
 
   @Override
-  public int getSize() {
-    return weapons.size();
+  public void addListDataListener(ListDataListener l) {
+    listeners.add(l);
   }
 
   @Override
@@ -44,8 +44,13 @@ public class WeaponComboBoxModel implements ComboBoxModel {
   }
 
   @Override
-  public void addListDataListener(ListDataListener l) {
-    listeners.add(l);
+  public Object getSelectedItem() {
+    return selectedWeapon;
+  }
+
+  @Override
+  public int getSize() {
+    return weapons.size();
   }
 
   @Override
@@ -58,11 +63,6 @@ public class WeaponComboBoxModel implements ComboBoxModel {
     if (o instanceof Weapon) {
       this.selectedWeapon = (Weapon) o;
     }
-  }
-
-  @Override
-  public Object getSelectedItem() {
-    return selectedWeapon;
   }
 
 }

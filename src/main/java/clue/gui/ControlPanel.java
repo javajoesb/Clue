@@ -26,17 +26,22 @@ public class ControlPanel extends JPanel {
   private final JSpinner spinner;
   private final JButton startButton;
   private final JComboBox players;
+
   public ControlPanel() {
     this.startButton = new JButton();
     this.players = new JComboBox(new SuspectComboBoxModel(Suspect.values()));
-    this.players.setSelectedIndex(Prefs.userNode(this.getClass()).getInt(
-        "currentPlayerIndex", 0));
-    int value = Prefs.userNode(ControlPanel.class).getInt("players", 1);
-    this.spinner = new JSpinner(new SpinnerNumberModel(value, 1,
-        Suspect.values().length - 1, 1));
+    this.players.setSelectedIndex(Prefs.userNode(this.getClass()).getInt("currentPlayerIndex", 0));
+    final int value = Prefs.userNode(ControlPanel.class).getInt("players", 1);
+    this.spinner = new JSpinner(new SpinnerNumberModel(value, 1, Suspect.values().length - 1, 1));
 
     initGui();
     initListeners();
+  }
+
+  private void enableControls(boolean isEnabled) {
+    spinner.setEnabled(isEnabled);
+    startButton.setEnabled(isEnabled);
+    players.setEnabled(isEnabled);
   }
 
   private void initGui() {
@@ -53,8 +58,7 @@ public class ControlPanel extends JPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        ClueEngine.get().startGame((Integer) spinner.getValue(),
-            (Suspect) players.getSelectedItem());
+        ClueEngine.startGame((Integer) spinner.getValue(), (Suspect) players.getSelectedItem());
         enableControls(false);
       }
     });
@@ -62,8 +66,7 @@ public class ControlPanel extends JPanel {
 
       @Override
       public void stateChanged(ChangeEvent e) {
-        Prefs.userNode(ControlPanel.class).putInt("players",
-            (Integer) spinner.getValue());
+        Prefs.userNode(ControlPanel.class).putInt("players", (Integer) spinner.getValue());
       }
     });
     players.addItemListener(new ItemListener() {
@@ -71,17 +74,10 @@ public class ControlPanel extends JPanel {
       @Override
       public void itemStateChanged(ItemEvent e) {
         if (ItemEvent.SELECTED == e.getStateChange()) {
-          JComboBox box = (JComboBox) e.getSource();
-          Prefs.userNode(ControlPanel.class).putInt("currentPlayerIndex",
-              box.getSelectedIndex());
+          final JComboBox box = (JComboBox) e.getSource();
+          Prefs.userNode(ControlPanel.class).putInt("currentPlayerIndex", box.getSelectedIndex());
         }
       }
     });
-  }
-
-  private void enableControls(boolean isEnabled) {
-    spinner.setEnabled(isEnabled);
-    startButton.setEnabled(isEnabled);
-    players.setEnabled(isEnabled);
   }
 }

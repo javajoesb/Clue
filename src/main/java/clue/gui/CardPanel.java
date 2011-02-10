@@ -10,8 +10,8 @@ public class CardPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
   private final Card card;
-  private JLabel face;
-  private JLabel back;
+  private final JLabel face;
+  private final JLabel back;
 
   public CardPanel(Card card) {
     this.card = card;
@@ -24,12 +24,6 @@ public class CardPanel extends JPanel {
     this.add(back);
   }
 
-  public void showCard() {
-    CardPanel.this.remove(back);
-    CardPanel.this.add(face);
-    this.revalidate();
-  }
-
   public void hideCard() {
     CardPanel.this.remove(face);
     CardPanel.this.add(back);
@@ -38,5 +32,11 @@ public class CardPanel extends JPanel {
 
   public boolean isCard(Card card) {
     return this.card.equals(card);
+  }
+
+  public void showCard() {
+    CardPanel.this.remove(back);
+    CardPanel.this.add(face);
+    this.revalidate();
   }
 }

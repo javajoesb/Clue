@@ -9,7 +9,11 @@ import clue.model.Suspicion;
 public class GameEventAdapter implements GameEventListener {
 
   @Override
-  public void startGame(GameEvent e) {
+  public void addEvidence(Evidence evidence) {
+  }
+
+  @Override
+  public void error(GameError gameError) {
   }
 
   @Override
@@ -21,15 +25,11 @@ public class GameEventAdapter implements GameEventListener {
   }
 
   @Override
-  public void error(GameError gameError) {
-  }
-
-  @Override
   public boolean showCard(Card card) {
     return false;
   }
 
   @Override
-  public void addEvidence(Evidence evidence) {
+  public void startGame(GameEvent e) {
   }
 }

@@ -26,7 +26,7 @@ public class SuspectComboBoxModel implements ComboBoxModel {
         return lhs.name().compareTo(rhs.name());
       }
     });
-    for (Suspect suspect : suspectArray) {
+    for (final Suspect suspect : suspectArray) {
       this.suspects.add(suspect);
     }
     if (!this.suspects.isEmpty()) {
@@ -35,8 +35,8 @@ public class SuspectComboBoxModel implements ComboBoxModel {
   }
 
   @Override
-  public int getSize() {
-    return suspects.size();
+  public void addListDataListener(ListDataListener l) {
+    listners.add(l);
   }
 
   @Override
@@ -45,8 +45,13 @@ public class SuspectComboBoxModel implements ComboBoxModel {
   }
 
   @Override
-  public void addListDataListener(ListDataListener l) {
-    listners.add(l);
+  public Object getSelectedItem() {
+    return selected;
+  }
+
+  @Override
+  public int getSize() {
+    return suspects.size();
   }
 
   @Override
@@ -63,11 +68,6 @@ public class SuspectComboBoxModel implements ComboBoxModel {
       throw new ClassCastException(String.format("Expected %s, not %s", Suspect.class.getSimpleName(), anItem == null ? "?NULL" : anItem.getClass()
           .getCanonicalName()));
     }
-  }
-
-  @Override
-  public Object getSelectedItem() {
-    return selected;
   }
 
 }

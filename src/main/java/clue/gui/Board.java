@@ -1,12 +1,15 @@
 package clue.gui;
 
+import static clue.ClueEngine.addGameListener;
+import static clue.ClueEngine.getCellarCards;
+import static clue.ClueEngine.getPlayers;
+
 import java.awt.Component;
 
 import javax.swing.Box;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import clue.ClueEngine;
 import clue.event.GameError;
 import clue.event.GameEvent;
 import clue.event.GameEventAdapter;
@@ -38,7 +41,7 @@ public class Board extends JPanel {
   }
 
   private void initGui() {
-    for (Room room : Room.values()) {
+    for (final Room room : Room.values()) {
       if (!Room.Cellar.equals(room)) {
         roomBox.add(new RoomPanel(room));
       }
@@ -54,30 +57,49 @@ public class Board extends JPanel {
   }
 
   private void initListeners() {
-    ClueEngine.get().addGameListener(new GameEventAdapter() {
-      @Override
-      public void startGame(GameEvent e) {
-        for (Player player : ClueEngine.get().getPlayers()) {
-          PlayerPanel playerPanel = new PlayerPanel(player);
-          if (player.isCurrentPlayer()) {
-            playerPanel.showCards();
+    addGameListener(new GameEventAdapter() {
+      public void clearSuspcision() {
+        final Component[] components = roomBox.getComponents();
+        for (final Component component : components) {
+          if (component instanceof RoomPanel) {
+            final RoomPanel roomPanel = (RoomPanel) component;
+            roomPanel.clearSuspect();
+            roomPanel.clearWeapon();
+            roomPanel.redraw();
           }
-          playerBox.add(playerPanel);
         }
-        // put remaining cards in the cellar.
-        cellarPanel.addCards(ClueEngine.get().getCellarCards());
+      }
 
-        Board.this.parent.validate();
-        Board.this.parent.repaint();
+      @Override
+      public void error(GameError error) {
+        JOptionPane.showMessageDialog(Board.this.parent, error.getMessage());
+      }
+
+      @Override
+      public void makeSuspcision(Suspicion suspicion) {
+        final Accusation accusation = suspicion.getAccusation();
+        movePlayer(accusation.getRoom(), accusation.getSuspect());
+        moveWeapon(accusation.getRoom(), accusation.getWeapon());
+        final Component[] components = roomBox.getComponents();
+        for (final Component component : components) {
+          if (component instanceof RoomPanel) {
+            final RoomPanel roomPanel = (RoomPanel) component;
+            if (roomPanel.isRoom(accusation.getRoom())) {
+              roomPanel.accuse(accusation.getSuspect());
+              roomPanel.accuse(accusation.getWeapon());
+            }
+            roomPanel.redraw();
+          }
+        }
       }
 
       @Override
       public void movePlayer(Room room, Suspect suspect) {
         clearSuspcision();
-        Component[] components = roomBox.getComponents();
-        for (Component component : components) {
+        final Component[] components = roomBox.getComponents();
+        for (final Component component : components) {
           if (component instanceof RoomPanel) {
-            RoomPanel roomPanel = (RoomPanel) component;
+            final RoomPanel roomPanel = (RoomPanel) component;
             if (roomPanel.isRoom(room)) {
               roomPanel.addSuspect(suspect);
             } else {
@@ -90,10 +112,10 @@ public class Board extends JPanel {
 
       public void moveWeapon(Room room, Weapon weapon) {
         clearSuspcision();
-        Component[] components = roomBox.getComponents();
-        for (Component component : components) {
+        final Component[] components = roomBox.getComponents();
+        for (final Component component : components) {
           if (component instanceof RoomPanel) {
-            RoomPanel roomPanel = (RoomPanel) component;
+            final RoomPanel roomPanel = (RoomPanel) component;
             if (roomPanel.isRoom(room)) {
               roomPanel.addWeapon(weapon);
             } else {
@@ -104,39 +126,20 @@ public class Board extends JPanel {
         }
       }
 
-      public void clearSuspcision() {
-        Component[] components = roomBox.getComponents();
-        for (Component component : components) {
-          if (component instanceof RoomPanel) {
-            RoomPanel roomPanel = (RoomPanel) component;
-            roomPanel.clearSuspect();
-            roomPanel.clearWeapon();
-            roomPanel.redraw();
-          }
-        }
-      }
-
       @Override
-      public void makeSuspcision(Suspicion suspicion) {
-        Accusation accusation = suspicion.getAccusation();
-        movePlayer(accusation.getRoom(), accusation.getSuspect());
-        moveWeapon(accusation.getRoom(), accusation.getWeapon());
-        Component[] components = roomBox.getComponents();
-        for (Component component : components) {
-          if (component instanceof RoomPanel) {
-            RoomPanel roomPanel = (RoomPanel) component;
-            if (roomPanel.isRoom(accusation.getRoom())) {
-              roomPanel.accuse(accusation.getSuspect());
-              roomPanel.accuse(accusation.getWeapon());
-            }
-            roomPanel.redraw();
+      public void startGame(GameEvent e) {
+        for (final Player player : getPlayers()) {
+          final PlayerPanel playerPanel = new PlayerPanel(player);
+          if (player.isCurrentPlayer()) {
+            playerPanel.showCards();
           }
+          playerBox.add(playerPanel);
         }
-      }
+        // put remaining cards in the cellar.
+        cellarPanel.addCards(getCellarCards());
 
-      @Override
-      public void error(GameError error) {
-        JOptionPane.showMessageDialog(Board.this.parent, error.getMessage());
+        Board.this.parent.validate();
+        Board.this.parent.repaint();
       }
     });
   }

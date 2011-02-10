@@ -15,14 +15,22 @@ public class EvidenceTableModel extends AbstractTableModel {
 
   private static final long serialVersionUID = 1L;
   private static final Logger logger = Logger.getLogger(EvidenceTableModel.class);
-  private Map<Integer, Suspicion> suspicionStack;
-  private Map<Integer, Evidence> evidenceStack;
+  private final Map<Integer, Suspicion> suspicionStack;
+  private final Map<Integer, Evidence> evidenceStack;
   private int row;
 
   public EvidenceTableModel() {
     row = -1;
     suspicionStack = new HashMap<Integer, Suspicion>();
     evidenceStack = new HashMap<Integer, Evidence>();
+  }
+
+  public void addEvidence(Evidence evidence) {
+    if (logger.isDebugEnabled()) {
+      logger.debug(String.format("Adding evidence %s: %s", row, ToStringBuilder.reflectionToString(evidence)));
+    }
+    evidenceStack.put(row, evidence);
+    super.fireTableDataChanged();
   }
 
   public void addSuspcision(Suspicion suspicion) {
@@ -34,17 +42,10 @@ public class EvidenceTableModel extends AbstractTableModel {
     super.fireTableDataChanged();
   }
 
-  public void addEvidence(Evidence evidence) {
-    if (logger.isDebugEnabled()) {
-      logger.debug(String.format("Adding evidence %s: %s", row, ToStringBuilder.reflectionToString(evidence)));
-    }
-    evidenceStack.put(row, evidence);
-    super.fireTableDataChanged();
-  }
-
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
-  public int getRowCount() {
-    return row + 1;
+  public Class getColumnClass(int c) {
+    return String.class;
   }
 
   @Override
@@ -52,40 +53,27 @@ public class EvidenceTableModel extends AbstractTableModel {
     return 6;
   }
 
-  @Override
-  public Object getValueAt(int rowIndex, int columnIndex) {
-
-    if (logger.isDebugEnabled()) {
-      logger.debug(String.format("GetValue (%s,%s)", rowIndex, columnIndex));
-    }
-    switch (columnIndex) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-      return getSuspicionValue(rowIndex, columnIndex);
-    case 4:
-      return getEvidenceValue(rowIndex, columnIndex);
-    }
-    return String.format("? %s,%s", rowIndex, columnIndex);
-  }
-
   private String getEvidenceValue(int rowIndex, int columnIndex) {
-    Evidence evidence = evidenceStack.get(rowIndex);
+    final Evidence evidence = evidenceStack.get(rowIndex);
     switch (columnIndex) {
     case 4:
       return evidence == null ? "" : evidence.whoShowed().getName();
     case 5:
       return evidence == null ? "" : evidence.whichCard().name();
     }
-    return "";
+    return "No evidence for column " + columnIndex;
+  }
+
+  @Override
+  public int getRowCount() {
+    return row + 1;
   }
 
   private String getSuspicionValue(int rowIndex, int columnIndex) {
-    Suspicion suspicion = suspicionStack.get(rowIndex);
+    final Suspicion suspicion = suspicionStack.get(rowIndex);
     switch (columnIndex) {
     case 0:
-      return suspicion == null ? "" : suspicion.getPlayer().getName();
+      return suspicion == null ? "" : suspicion.getPlayer() == null ? "" : suspicion.getPlayer().getName();
     case 1:
       return suspicion == null ? "" : suspicion.getAccusation() == null ? "" : suspicion.getAccusation().getSuspect() == null ? "" : suspicion.getAccusation()
           .getSuspect().name();
@@ -99,9 +87,18 @@ public class EvidenceTableModel extends AbstractTableModel {
     return "";
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
-  public Class getColumnClass(int c) {
-    return String.class;
+  public Object getValueAt(int rowIndex, int columnIndex) {
+    switch (columnIndex) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      return getSuspicionValue(rowIndex, columnIndex);
+    case 4:
+    case 5:
+      return getEvidenceValue(rowIndex, columnIndex);
+    }
+    return String.format("? %s,%s", rowIndex, columnIndex);
   }
 }

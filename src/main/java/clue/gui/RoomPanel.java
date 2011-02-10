@@ -47,6 +47,49 @@ public class RoomPanel extends JPanel {
     initListeners();
   }
 
+  public void accuse(Suspect suspect) {
+    currentSuspect = suspect;
+  }
+
+  public void accuse(Weapon weapon) {
+    currentWeapon = weapon;
+  }
+
+  public void addCards(List<Card> cards) {
+    this.cards.clear();
+    this.cards.addAll(cards);
+    redraw();
+  }
+
+  public void addSuspect(Suspect suspect) {
+    if (suspect != null) {
+      suspects.add(suspect);
+    }
+  }
+
+  public void addWeapon(Weapon weapon) {
+    if (weapon != null) {
+      weapons.add(weapon);
+    }
+  }
+
+  public void clearSuspect() {
+    currentSuspect = null;
+  }
+
+  public void clearWeapon() {
+    currentWeapon = null;
+  }
+
+  private void hideCards() {
+    for (final Component component : box.getComponents()) {
+      if (component instanceof CardPanel) {
+        final CardPanel cardPanel = (CardPanel) component;
+        cardPanel.hideCard();
+      }
+    }
+  }
+
   private void initListeners() {
     this.addMouseListener(new MouseAdapter() {
 
@@ -54,7 +97,7 @@ public class RoomPanel extends JPanel {
       public void mouseClicked(MouseEvent e) {
         if (e.getButton() == 3) {
           showCards();
-          Timer timer = new Timer("Player-Card-Flipper", true);
+          final Timer timer = new Timer("Player-Card-Flipper", true);
           timer.schedule(new TimerTask() {
 
             @Override
@@ -75,48 +118,8 @@ public class RoomPanel extends JPanel {
     });
   }
 
-  public void addCards(List<Card> cards) {
-    this.cards.clear();
-    this.cards.addAll(cards);
-    redraw();
-  }
-
   public boolean isRoom(Room room) {
     return this.room.equals(room);
-  }
-
-  public void addSuspect(Suspect suspect) {
-    suspects.add(suspect);
-  }
-
-  public void removeSuspect(Suspect suspect) {
-    clearSuspect();
-    suspects.remove(suspect);
-  }
-
-  public void accuse(Suspect suspect) {
-    currentSuspect = suspect;
-  }
-
-  public void clearSuspect() {
-    currentSuspect = null;
-  }
-
-  public void addWeapon(Weapon weapon) {
-    weapons.add(weapon);
-  }
-
-  public void removeWeapon(Weapon weapon) {
-    clearWeapon();
-    weapons.remove(weapon);
-  }
-
-  public void accuse(Weapon weapon) {
-    currentWeapon = weapon;
-  }
-
-  public void clearWeapon() {
-    currentWeapon = null;
   }
 
   public void redraw() {
@@ -126,8 +129,8 @@ public class RoomPanel extends JPanel {
       box.add(spacer);
     }
 
-    for (Card card : cards) {
-      CardPanel cardPanel = new CardPanel(card);
+    for (final Card card : cards) {
+      final CardPanel cardPanel = new CardPanel(card);
       cardPanel.hideCard();
       box.add(cardPanel);
     }
@@ -137,17 +140,17 @@ public class RoomPanel extends JPanel {
     if (currentSuspect != null) {
       box.add(BoxUtil.createHorizontalBox(new JLabel("*"), new SuspectPanel(currentSuspect)));
     }
-    for (Suspect suspect : suspects) {
+    for (final Suspect suspect : suspects) {
       if (suspect.equals(currentSuspect)) {
         continue;
       }
-      SuspectPanel suspectPanel = new SuspectPanel(suspect);
+      final SuspectPanel suspectPanel = new SuspectPanel(suspect);
       box.add(suspectPanel);
     }
     if (currentWeapon != null) {
       box.add(BoxUtil.createHorizontalBox(new JLabel("*"), new WeaponPanel(currentWeapon)));
     }
-    for (Weapon weapon : weapons) {
+    for (final Weapon weapon : weapons) {
       if (weapon.equals(currentWeapon)) {
         continue;
       }
@@ -156,20 +159,21 @@ public class RoomPanel extends JPanel {
     this.revalidate();
   }
 
-  private void showCards() {
-    for (Component component : box.getComponents()) {
-      if (component instanceof CardPanel) {
-        CardPanel cardPanel = (CardPanel) component;
-        cardPanel.showCard();
-      }
-    }
+  public void removeSuspect(Suspect suspect) {
+    clearSuspect();
+    suspects.remove(suspect);
   }
 
-  private void hideCards() {
-    for (Component component : box.getComponents()) {
+  public void removeWeapon(Weapon weapon) {
+    clearWeapon();
+    weapons.remove(weapon);
+  }
+
+  private void showCards() {
+    for (final Component component : box.getComponents()) {
       if (component instanceof CardPanel) {
-        CardPanel cardPanel = (CardPanel) component;
-        cardPanel.hideCard();
+        final CardPanel cardPanel = (CardPanel) component;
+        cardPanel.showCard();
       }
     }
   }

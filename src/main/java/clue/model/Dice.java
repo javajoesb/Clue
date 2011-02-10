@@ -6,11 +6,11 @@ public class Dice {
 
   private static final Random random = new Random();
 
+  private int side;
+
   public Dice() {
     side = shake();
   }
-
-  private int side;
 
   public int getSide() {
     return side;

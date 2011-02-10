@@ -10,11 +10,11 @@ public class Evidence {
     this.card = card;
   }
 
-  public Player whoShowed() {
-    return this.playerWithCard;
-  }
-
   public Card whichCard() {
     return this.card;
+  }
+
+  public Player whoShowed() {
+    return this.playerWithCard;
   }
 }

@@ -8,6 +8,7 @@ import javax.swing.JTable;
 
 import clue.ClueEngine;
 import clue.event.GameEventAdapter;
+import clue.gui.model.EvidenceTableCellRenderer;
 import clue.gui.model.EvidenceTableModel;
 import clue.model.Evidence;
 import clue.model.Suspicion;
@@ -27,23 +28,27 @@ public class EvidencePanel extends JPanel {
   }
 
   private void initGui() {
+    for (int i = 0; i < tableModel.getColumnCount(); i++) {
+      table.getColumnModel().getColumn(i).setHeaderRenderer(new EvidenceTableCellRenderer());
+    }
+
     box.add(new JLabel("Evidence"));
-    JScrollPane scrollPane = new JScrollPane(table);
+    final JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.getViewport().setSize(20, 20);
     box.add(scrollPane);
     add(box);
   }
 
   private void initListeners() {
-    ClueEngine.get().addGameListener(new GameEventAdapter() {
-      @Override
-      public void makeSuspcision(Suspicion suspicion) {
-        tableModel.addSuspcision(suspicion);
-      }
-
+    ClueEngine.addGameListener(new GameEventAdapter() {
       @Override
       public void addEvidence(Evidence evidence) {
         tableModel.addEvidence(evidence);
+      }
+
+      @Override
+      public void makeSuspcision(Suspicion suspicion) {
+        tableModel.addSuspcision(suspicion);
       }
     });
   }

@@ -10,9 +10,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Player {
 
   private final Suspect suspect;
-  private List<Card> cards;
+  private final List<Card> cards;
   private boolean isCurrentPlayer;
-  private Map<Player, List<Card>> displayed;
+  private final Map<Player, List<Card>> displayed;
 
   public Player(Suspect suspect) {
     this.suspect = suspect;
@@ -20,29 +20,16 @@ public class Player {
     this.displayed = new HashMap<Player, List<Card>>();
   }
 
-  public String getName() {
-    return suspect.name();
-  }
-
   public void addCard(Card card) {
     cards.add(card);
   }
 
-  public List<Card> getCards() {
-    return new LinkedList<Card>(cards);
-  }
-
-  public boolean hasCardFor(Accusation accusation) {
-    for (Card card : cards) {
-      if (card.equals(accusation.getRoom()) || card.equals(accusation.getWeapon()) || card.equals(accusation.getSuspect())) {
-        return true;
-      }
-    }
-    return false;
+  public Suspect asSuspect() {
+    return suspect;
   }
 
   public Card chooseCardFor(Player currentPlayer, Accusation accusation) {
-    List<Card> list = getDisplayedList(currentPlayer);
+    final List<Card> list = getDisplayedList(currentPlayer);
     // return the card we have shown before.
     if (list.contains(accusation.getSuspect())) {
       return accusation.getSuspect();
@@ -54,13 +41,35 @@ public class Player {
       return accusation.getRoom();
     }
     // go find the card
-    for (Card card : cards) {
+    for (final Card card : cards) {
       if (card.equals(accusation.getRoom()) || card.equals(accusation.getWeapon()) || card.equals(accusation.getSuspect())) {
         list.add(card);
         return card;
       }
     }
     throw new RuntimeException(String.format("Dear developer, please call hasCardFor %s before choosingCard", ToStringBuilder.reflectionToString(accusation)));
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Player other = (Player) obj;
+    if (suspect != other.suspect) {
+      return false;
+    }
+    return true;
+  }
+
+  public List<Card> getCards() {
+    return new LinkedList<Card>(cards);
   }
 
   private List<Card> getDisplayedList(Player currentPlayer) {
@@ -72,16 +81,17 @@ public class Player {
     return list;
   }
 
-  public Suspect asSuspect() {
-    return suspect;
+  public String getName() {
+    return suspect.name();
   }
 
-  public void setCurrentPlayer(boolean currentPlayer) {
-    this.isCurrentPlayer = currentPlayer;
-  }
-
-  public boolean isCurrentPlayer() {
-    return isCurrentPlayer;
+  public boolean hasCardFor(Accusation accusation) {
+    for (final Card card : cards) {
+      if (card.equals(accusation.getRoom()) || card.equals(accusation.getWeapon()) || card.equals(accusation.getSuspect())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
@@ -92,18 +102,12 @@ public class Player {
     return result;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Player other = (Player) obj;
-    if (suspect != other.suspect)
-      return false;
-    return true;
+  public boolean isCurrentPlayer() {
+    return isCurrentPlayer;
+  }
+
+  public void setCurrentPlayer(boolean currentPlayer) {
+    this.isCurrentPlayer = currentPlayer;
   }
 
 }
